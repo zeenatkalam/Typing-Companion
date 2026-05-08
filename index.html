@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TypeMaster Pro - Elite Typing Practice & Companion Mode</title>
+    <meta name="description" content="Master your typing speed with TypeMaster Pro. Practice solo or connect with a companion to race in real-time.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header class="header text-glow">
+            <div class="logo">
+                <span class="logo-icon">⌨️</span>
+                <h1>TypeMaster <span class="accent">Pro</span></h1>
+            </div>
+            <nav class="nav-links">
+                <button id="nav-learning" class="nav-btn active">Learning Phase</button>
+                <button id="nav-practice" class="nav-btn">Practice Phase</button>
+                <button id="nav-companion" class="nav-btn">Companion Mode</button>
+            </nav>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="main-container">
+
+            <!-- Learning Phase -->
+            <section id="learning-mode" class="mode-section active">
+                <!-- Lesson Category Tabs -->
+                <div class="lesson-categories" id="lesson-categories">
+                    <div class="lesson-category active" data-category="letters">
+                        <svg class="cat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>
+                        </svg>
+                        <span class="cat-label">Letters</span>
+                    </div>
+                    <div class="lesson-category" data-category="words">
+                        <svg class="cat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                            <path d="M4 7h16"/><path d="M4 12h12"/><path d="M4 17h8"/>
+                        </svg>
+                        <span class="cat-label">Words</span>
+                    </div>
+                    <div class="lesson-category" data-category="sentences">
+                        <svg class="cat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                            <path d="M4 6h16"/><path d="M4 10h16"/><path d="M4 14h16"/><path d="M4 18h10"/>
+                        </svg>
+                        <span class="cat-label">Sentences</span>
+                    </div>
+                    <div class="lesson-category" data-category="game">
+                        <svg class="cat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h4M8 10v4"/><circle cx="16" cy="10" r="1" fill="currentColor"/><circle cx="18" cy="12" r="1" fill="currentColor"/>
+                        </svg>
+                        <span class="cat-label">Game</span>
+                    </div>
+                </div>
+
+                <!-- Sub-option pills (populated by JS) -->
+                <div class="lesson-suboptions" id="lesson-suboptions"></div>
+
+                <!-- Standard Learning UI -->
+                <div id="standard-learning-ui">
+                    <div class="glass-panel learning-container">
+                        <div id="learning-blocks" class="learning-blocks">
+                            <!-- Letter blocks injected here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Game UI -->
+                <div id="game-learning-ui" class="hidden glass-panel game-panel">
+                    <div class="game-stats">
+                        <span>Score: <span id="game-score">0</span></span>
+                        <span>Missed: <span id="game-missed">0</span>/5</span>
+                    </div>
+                    <div id="game-area" class="game-area">
+                    </div>
+                    <div class="game-input-area">
+                        <input type="text" id="game-input" autocomplete="off" placeholder="Type the falling word here...">
+                    </div>
+                    <div id="game-over-screen" class="hidden game-overlay">
+                        <h2>Game Over!</h2>
+                        <button id="btn-restart-game" class="btn primary-btn">Play Again</button>
+                    </div>
+                </div>
+
+                <!-- Keyboard + Hands -->
+                <div class="keyboard-container glass-panel">
+                    <div class="keyboard-title">Virtual Keyboard</div>
+                    <div class="keyboard-and-hands-wrapper">
+                        <div class="keyboard" id="virtual-keyboard">
+                            <div class="kb-row">
+                                <div class="key" data-key="`">~<br>`</div>
+                                <div class="key" data-key="1" data-finger="l-pinky">!<br>1</div>
+                                <div class="key" data-key="2" data-finger="l-ring">@<br>2</div>
+                                <div class="key" data-key="3" data-finger="l-middle">#<br>3</div>
+                                <div class="key" data-key="4" data-finger="l-index">$<br>4</div>
+                                <div class="key" data-key="5" data-finger="l-index">%<br>5</div>
+                                <div class="key" data-key="6" data-finger="r-index">^<br>6</div>
+                                <div class="key" data-key="7" data-finger="r-index">&amp;<br>7</div>
+                                <div class="key" data-key="8" data-finger="r-middle">*<br>8</div>
+                                <div class="key" data-key="9" data-finger="r-ring">(<br>9</div>
+                                <div class="key" data-key="0" data-finger="r-pinky">)<br>0</div>
+                                <div class="key" data-key="-" data-finger="r-pinky">_<br>-</div>
+                                <div class="key" data-key="=" data-finger="r-pinky">+<br>=</div>
+                                <div class="key kb-delete" data-key="Backspace" data-finger="r-pinky">⌫</div>
+                            </div>
+                            <div class="kb-row">
+                                <div class="key kb-tab" data-key="Tab" data-finger="l-pinky">Tab</div>
+                                <div class="key" data-key="q" data-finger="l-pinky">Q</div>
+                                <div class="key" data-key="w" data-finger="l-ring">W</div>
+                                <div class="key" data-key="e" data-finger="l-middle">E</div>
+                                <div class="key" data-key="r" data-finger="l-index">R</div>
+                                <div class="key" data-key="t" data-finger="l-index">T</div>
+                                <div class="key" data-key="y" data-finger="r-index">Y</div>
+                                <div class="key" data-key="u" data-finger="r-index">U</div>
+                                <div class="key" data-key="i" data-finger="r-middle">I</div>
+                                <div class="key" data-key="o" data-finger="r-ring">O</div>
+                                <div class="key" data-key="p" data-finger="r-pinky">P</div>
+                                <div class="key" data-key="[" data-finger="r-pinky">{<br>[</div>
+                                <div class="key" data-key="]" data-finger="r-pinky">}<br>]</div>
+                                <div class="key" data-key="\\" data-finger="r-pinky">|<br>\</div>
+                            </div>
+                            <div class="kb-row">
+                                <div class="key kb-caps" data-key="CapsLock" data-finger="l-pinky">Caps</div>
+                                <div class="key" data-key="a" data-finger="l-pinky">A</div>
+                                <div class="key" data-key="s" data-finger="l-ring">S</div>
+                                <div class="key" data-key="d" data-finger="l-middle">D</div>
+                                <div class="key" data-key="f" data-finger="l-index">F</div>
+                                <div class="key" data-key="g" data-finger="l-index">G</div>
+                                <div class="key" data-key="h" data-finger="r-index">H</div>
+                                <div class="key" data-key="j" data-finger="r-index">J</div>
+                                <div class="key" data-key="k" data-finger="r-middle">K</div>
+                                <div class="key" data-key="l" data-finger="r-ring">L</div>
+                                <div class="key" data-key=";" data-finger="r-pinky">:<br>;</div>
+                                <div class="key" data-key="'" data-finger="r-pinky">"<br>'</div>
+                                <div class="key kb-enter" data-key="Enter" data-finger="r-pinky">Enter</div>
+                            </div>
+                            <div class="kb-row">
+                                <div class="key kb-shift-l" data-key="Shift" data-finger="l-pinky">Shift</div>
+                                <div class="key" data-key="z" data-finger="l-pinky">Z</div>
+                                <div class="key" data-key="x" data-finger="l-ring">X</div>
+                                <div class="key" data-key="c" data-finger="l-middle">C</div>
+                                <div class="key" data-key="v" data-finger="l-index">V</div>
+                                <div class="key" data-key="b" data-finger="l-index">B</div>
+                                <div class="key" data-key="n" data-finger="r-index">N</div>
+                                <div class="key" data-key="m" data-finger="r-index">M</div>
+                                <div class="key" data-key="," data-finger="r-middle">&lt;<br>,</div>
+                                <div class="key" data-key="." data-finger="r-ring">&gt;<br>.</div>
+                                <div class="key" data-key="/" data-finger="r-pinky">?<br>/</div>
+                                <div class="key kb-shift-r" data-key="Shift">Shift</div>
+                            </div>
+                            <div class="kb-row">
+                                <div class="key kb-ctrl" data-key="Control">Ctrl</div>
+                                <div class="key kb-alt" data-key="Alt">Alt</div>
+                                <div class="key kb-cmd" data-key="Meta">Cmd</div>
+                                <div class="key kb-space" data-key=" " data-finger="thumb"></div>
+                                <div class="key kb-cmd" data-key="Meta">Cmd</div>
+                                <div class="key kb-alt" data-key="Alt">Alt</div>
+                                <div class="key kb-ctrl" data-key="Control">Ctrl</div>
+                            </div>
+                        </div>
+                        <!-- Hands with CSS-based finger highlights -->
+                        <div class="hands-overlay" id="hands-overlay">
+                            <div class="hand-wrapper left-hand-wrapper">
+                                <img src="left.png" class="hand-img" id="left-hand-img" alt="Left hand">
+                                <div class="finger-dot" id="fd-l-pinky"></div>
+                                <div class="finger-dot" id="fd-l-ring"></div>
+                                <div class="finger-dot" id="fd-l-middle"></div>
+                                <div class="finger-dot" id="fd-l-index"></div>
+                                <div class="finger-dot" id="fd-l-thumb"></div>
+                            </div>
+                            <div class="hand-wrapper right-hand-wrapper">
+                                <img src="right.png" class="hand-img" id="right-hand-img" alt="Right hand">
+                                <div class="finger-dot" id="fd-r-thumb"></div>
+                                <div class="finger-dot" id="fd-r-index"></div>
+                                <div class="finger-dot" id="fd-r-middle"></div>
+                                <div class="finger-dot" id="fd-r-ring"></div>
+                                <div class="finger-dot" id="fd-r-pinky"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Practice Phase -->
+            <section id="practice-mode" class="mode-section hidden">
+                <div class="glass-panel text-display-container">
+                    <div class="metrics-bar">
+                        <div class="metric"><span class="metric-label">WPM</span><span id="practice-wpm" class="metric-value">0</span></div>
+                        <div class="metric"><span class="metric-label">ACC</span><span id="practice-acc" class="metric-value">100%</span></div>
+                        <div class="metric"><span class="metric-label">TIME</span><span id="practice-time" class="metric-value">60s</span></div>
+                    </div>
+                    <div id="practice-text-display" class="text-display"></div>
+                </div>
+                <div class="controls">
+                    <button id="btn-restart-practice" class="btn primary-btn">Restart Practice</button>
+                    <button id="btn-next-practice" class="btn secondary-btn" style="margin-left: 1rem;">Next Passage</button>
+                </div>
+            </section>
+
+            <!-- Companion Mode -->
+            <section id="companion-mode" class="mode-section hidden">
+                <div id="companion-setup" class="glass-panel setup-panel">
+                    <h2>Race with a Companion</h2>
+                    <p class="subtitle">Connect peer-to-peer instantly. No registration required.</p>
+                    <div class="setup-actions">
+                        <div class="setup-card">
+                            <h3>Host a Race</h3>
+                            <p>Share your room ID with a friend.</p>
+                            <button id="btn-create-room" class="btn primary-btn">Create Room</button>
+                            <div class="room-id-display hidden" id="room-id-container">
+                                <span>Room ID:</span>
+                                <code id="host-room-id" class="selectable-code">Generating...</code>
+                            </div>
+                        </div>
+                        <div class="divider"><span>OR</span></div>
+                        <div class="setup-card">
+                            <h3>Join a Race</h3>
+                            <p>Enter a room ID from your friend.</p>
+                            <input type="text" id="join-room-id" placeholder="Enter Room ID" class="input-field">
+                            <button id="btn-join-room" class="btn secondary-btn">Join Room</button>
+                        </div>
+                    </div>
+                    <div id="connection-status" class="status-msg"></div>
+                </div>
+
+                <div id="companion-modes-selection" class="hidden glass-panel modes-grid-container">
+                    <h2 id="modes-selection-title">Select Game Mode</h2>
+                    <div class="modes-grid">
+                        <button class="mode-btn mode-select-btn" data-mode="typing">Typing Mode</button>
+                        <button class="mode-btn mode-select-btn" data-mode="falling">Falling Game</button>
+                        <button class="mode-btn mode-select-btn" data-mode="jumping">Jumping Game</button>
+                        <button class="mode-btn mode-select-btn" data-mode="code">Code Typing</button>
+                        <button class="mode-btn mode-select-btn" data-mode="sprint">Sprint Race</button>
+                        <button class="mode-btn mode-select-btn" data-mode="sudden-death">Sudden Death</button>
+                        <button class="mode-btn mode-select-btn" data-mode="zigzag">Zigzag Game</button>
+                        <button class="mode-btn mode-select-btn" data-mode="mode8" disabled>Coming Soon</button>
+                        <button class="mode-btn mode-select-btn" data-mode="mode9" disabled>Coming Soon</button>
+                    </div>
+                </div>
+
+                <div id="companion-race" class="hidden">
+                    <div class="race-track">
+                        <div class="track-row">
+                            <div class="track-info">
+                                <span class="player-name">You</span>
+                                <span id="p1-wpm" class="wpm-badge">0 WPM</span>
+                            </div>
+                            <div class="progress-bar-container">
+                                <div id="p1-progress" class="progress-bar my-progress" style="width: 0%"></div>
+                                <div class="car-icon p1-car">🏎️</div>
+                            </div>
+                        </div>
+                        <div class="track-row">
+                            <div class="track-info">
+                                <span class="player-name">Companion</span>
+                                <span id="p2-wpm" class="wpm-badge opponent-badge">0 WPM</span>
+                            </div>
+                            <div class="progress-bar-container">
+                                <div id="p2-progress" class="progress-bar" style="width: 0%"></div>
+                                <div class="car-icon p2-car">🚗</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="split-screen-container">
+                        <!-- Local Pane -->
+                        <div class="split-pane">
+                            <div class="glass-panel text-display-container">
+                                <div class="metrics-bar">
+                                    <div class="metric"><span class="metric-label">Local</span></div>
+                                </div>
+                                <div id="companion-text-display" class="text-display"></div>
+                            </div>
+                            <div class="keyboard-container glass-panel" id="local-kb-container">
+                                <div class="keyboard-title">Your Keyboard</div>
+                                <!-- Injected via JS -->
+                            </div>
+                        </div>
+                        
+                        <!-- Remote Pane -->
+                        <div class="split-pane">
+                            <div class="glass-panel text-display-container">
+                                <div class="metrics-bar">
+                                    <div class="metric"><span class="metric-label remote-badge">Remote</span></div>
+                                </div>
+                                <div id="remote-text-display" class="text-display"></div>
+                            </div>
+                            <div class="keyboard-container glass-panel" id="remote-kb-container">
+                                <div class="keyboard-title" style="color: var(--accent-secondary)">Companion Keyboard</div>
+                                <!-- Injected via JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="race-results" class="results-layer hidden">
+                        <h2 id="winner-announcement">You Won!</h2>
+                        <button id="btn-rematch" class="btn primary-btn">Request Rematch</button>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+        
+        <footer>
+            <p>Designed elegantly for ultimate typing mastery.</p>
+        </footer>
+    </div>
+
+    <!-- Mute/Unmute button -->
+    <button class="mute-toggle" id="mute-toggle" title="Toggle Sound">🔊</button>
+
+    <script src="app.js"></script>
+</body>
+</html>
